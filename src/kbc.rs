@@ -1,5 +1,6 @@
 use crate::drawer::{Depth, DrawerBox, Height, Width};
 use crate::Inches;
+use std::fmt::{Display, Formatter};
 
 impl Height {
     pub fn kbc(self) -> Inches {
@@ -29,12 +30,33 @@ impl Depth {
     }
 }
 
-impl DrawerBox {
-    pub fn kbc(self) -> (Inches, Inches, Inches) {
-        (self.height.kbc(), self.width.kbc(), self.depth.kbc())
-    }
+pub struct KBCBox {
+    height: Inches,
+    width: Inches,
+    depth: Inches,
+}
 
-    pub fn kbc_string(self) -> String {
-        format!("{} x {} x {}", self.height, self.width, self.depth)
+impl Display for KBCBox {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!(
+            "{} x {} x {}",
+            self.height, self.width, self.depth
+        ))
+    }
+}
+
+impl From<DrawerBox> for KBCBox {
+    fn from(drawer: DrawerBox) -> Self {
+        KBCBox {
+            height: drawer.height.kbc(),
+            width: drawer.width.kbc(),
+            depth: drawer.depth.kbc(),
+        }
+    }
+}
+
+impl DrawerBox {
+    pub fn kbc(self) -> KBCBox {
+        KBCBox::from(self)
     }
 }
