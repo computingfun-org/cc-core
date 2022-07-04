@@ -31,9 +31,9 @@ impl Depth {
 }
 
 pub struct KBCBox {
-    height: Inches,
-    width: Inches,
-    depth: Inches,
+    pub height: Inches,
+    pub width: Inches,
+    pub depth: Inches,
 }
 
 impl Display for KBCBox {
