@@ -187,7 +187,7 @@ impl ValenBox {
         ValenSidePlane::from(*self)
     }
 
-    pub fn valen_bottom(&self) -> ValenBottom {
+    pub fn bottom(&self) -> ValenBottom {
         ValenBottom::from(*self)
     }
 }
