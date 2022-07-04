@@ -1,6 +1,65 @@
 use crate::drawer::{Depth, DrawerBox, Height, Width};
 use crate::Millimeters;
-use derive_more::{Display, From, Into};
+use derive_more::Display;
+
+impl Depth {
+    pub fn valen_box(self) -> Millimeters {
+        match self {
+            Depth::D12 => Millimeters::from(-1.0),
+            Depth::D14 => Millimeters::from(327.0),
+            Depth::D16 => Millimeters::from(-1.0),
+            Depth::D20 => Millimeters::from(487.0),
+        }
+    }
+
+    pub fn valen_bottom(self) -> Millimeters {
+        match self {
+            Depth::D12 => Millimeters::from(-1.0),
+            Depth::D14 => Millimeters::from(318.0),
+            Depth::D16 => Millimeters::from(-1.0),
+            Depth::D20 => Millimeters::from(478.0),
+        }
+    }
+}
+
+impl Width {
+    pub fn valen_box(self) -> Millimeters {
+        match self {
+            Width::W18 => Millimeters::from(441.0),
+            Width::W24 => Millimeters::from(594.0),
+            Width::W30 => Millimeters::from(746.0),
+            Width::W36 => Millimeters::from(898.0),
+            Width::Custom(_) => Millimeters::from(-1.0),
+        }
+    }
+
+    pub fn valen_bottom(self) -> Millimeters {
+        match self {
+            Width::W18 => Millimeters::from(427.0),
+            Width::W24 => Millimeters::from(580.0),
+            Width::W30 => Millimeters::from(732.0),
+            Width::W36 => Millimeters::from(884.0),
+            Width::Custom(_) => Millimeters::from(-1.0),
+        }
+    }
+}
+
+impl Height {
+    pub fn valen_box(self) -> Millimeters {
+        match self {
+            Height::S | Height::MS => Millimeters::from(70.0),
+            Height::M => Millimeters::from(115.0),
+            Height::L => Millimeters::from(170.0),
+            Height::XL | Height::FILE => Millimeters::from(253.0),
+        }
+    }
+}
+
+impl DrawerBox {
+    pub fn valen(self) -> ValenBox {
+        ValenBox::from(self)
+    }
+}
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Display)]
 #[display(
@@ -12,130 +71,58 @@ use derive_more::{Display, From, Into};
     bottom_width
 )]
 pub struct ValenBox {
-    pub width: BoxWidth,
-    pub height: BoxHeight,
-    pub depth: BoxDepth,
-    pub bottom_depth: BottomDepth,
-    pub bottom_width: BottomWidth,
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Display)]
-#[display(fmt = "{} x {}", width, height)]
-pub struct ValenFront {
-    pub width: BoxWidth,
-    pub height: BoxHeight,
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Display)]
-#[display(fmt = "{} x {}", width, height)]
-pub struct ValenBack {
-    pub width: BoxWidth,
-    pub height: BoxHeight,
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Display)]
-#[display(fmt = "{} x {}", depth, height)]
-pub struct ValenSideLogo {
-    pub depth: BoxDepth,
-    pub height: BoxHeight,
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Display)]
-#[display(fmt = "{} x {}", depth, height)]
-pub struct ValenSidePlane {
-    pub depth: BoxDepth,
-    pub height: BoxHeight,
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Display)]
-#[display(fmt = "{} x {}", depth, width)]
-pub struct ValenBottom {
-    pub depth: BottomDepth,
-    pub width: BottomWidth,
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, From, Into, Display)]
-pub struct BoxDepth(Millimeters);
-
-impl From<Depth> for BoxDepth {
-    fn from(d: Depth) -> Self {
-        match d {
-            Depth::D12 => Self(Millimeters::from(-1.0)),
-            Depth::D14 => Self(Millimeters::from(327.0)),
-            Depth::D16 => Self(Millimeters::from(-1.0)),
-            Depth::D20 => Self(Millimeters::from(487.0)),
-        }
-    }
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, From, Into, Display)]
-pub struct BoxWidth(Millimeters);
-
-impl From<Width> for BoxWidth {
-    fn from(w: Width) -> Self {
-        match w {
-            Width::W18 => Self(Millimeters::from(441.0)),
-            Width::W24 => Self(Millimeters::from(594.0)),
-            Width::W30 => Self(Millimeters::from(746.0)),
-            Width::W36 => Self(Millimeters::from(898.0)),
-            Width::Custom(_) => Self(Millimeters::from(-1.0)),
-        }
-    }
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, From, Into, Display)]
-pub struct BoxHeight(Millimeters);
-
-impl From<Height> for BoxHeight {
-    fn from(h: Height) -> Self {
-        match h {
-            Height::S | Height::MS => Self(Millimeters::from(70.0)),
-            Height::M => Self(Millimeters::from(115.0)),
-            Height::L => Self(Millimeters::from(170.0)),
-            Height::XL | Height::FILE => Self(Millimeters::from(253.0)),
-        }
-    }
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, From, Into, Display)]
-pub struct BottomDepth(Millimeters);
-
-impl From<Depth> for BottomDepth {
-    fn from(d: Depth) -> Self {
-        match d {
-            Depth::D12 => Self(Millimeters::from(-1.0)),
-            Depth::D14 => Self(Millimeters::from(318.0)),
-            Depth::D16 => Self(Millimeters::from(-1.0)),
-            Depth::D20 => Self(Millimeters::from(478.0)),
-        }
-    }
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, From, Into, Display)]
-pub struct BottomWidth(Millimeters);
-
-impl From<Width> for BottomWidth {
-    fn from(w: Width) -> Self {
-        match w {
-            Width::W18 => Self(Millimeters::from(427.0)),
-            Width::W24 => Self(Millimeters::from(580.0)),
-            Width::W30 => Self(Millimeters::from(732.0)),
-            Width::W36 => Self(Millimeters::from(884.0)),
-            Width::Custom(_) => Self(Millimeters::from(-1.0)),
-        }
-    }
+    pub width: Millimeters,
+    pub height: Millimeters,
+    pub depth: Millimeters,
+    pub bottom_depth: Millimeters,
+    pub bottom_width: Millimeters,
 }
 
 impl From<DrawerBox> for ValenBox {
     fn from(drawer: DrawerBox) -> Self {
         Self {
-            width: BoxWidth::from(drawer.width),
-            height: BoxHeight::from(drawer.height),
-            depth: BoxDepth::from(drawer.depth),
-            bottom_depth: BottomDepth::from(drawer.depth),
-            bottom_width: BottomWidth::from(drawer.width),
+            width: drawer.width.valen_box(),
+            height: drawer.height.valen_box(),
+            depth: drawer.depth.valen_box(),
+            bottom_depth: drawer.depth.valen_bottom(),
+            bottom_width: drawer.width.valen_bottom(),
         }
     }
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Display)]
+#[display(fmt = "{} x {}", width, height)]
+pub struct ValenFront {
+    pub width: Millimeters,
+    pub height: Millimeters,
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Display)]
+#[display(fmt = "{} x {}", width, height)]
+pub struct ValenBack {
+    pub width: Millimeters,
+    pub height: Millimeters,
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Display)]
+#[display(fmt = "{} x {}", depth, height)]
+pub struct ValenSideLogo {
+    pub depth: Millimeters,
+    pub height: Millimeters,
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Display)]
+#[display(fmt = "{} x {}", depth, height)]
+pub struct ValenSidePlane {
+    pub depth: Millimeters,
+    pub height: Millimeters,
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Display)]
+#[display(fmt = "{} x {}", depth, width)]
+pub struct ValenBottom {
+    pub depth: Millimeters,
+    pub width: Millimeters,
 }
 
 impl From<ValenBox> for ValenFront {
@@ -180,5 +167,27 @@ impl From<ValenBox> for ValenBottom {
             depth: vbox.bottom_depth,
             width: vbox.bottom_width,
         }
+    }
+}
+
+impl ValenBox {
+    pub fn front(&self) -> ValenFront {
+        ValenFront::from(*self)
+    }
+
+    pub fn back(&self) -> ValenBack {
+        ValenBack::from(*self)
+    }
+
+    pub fn side_logo(&self) -> ValenSideLogo {
+        ValenSideLogo::from(*self)
+    }
+
+    pub fn side_plane(&self) -> ValenSidePlane {
+        ValenSidePlane::from(*self)
+    }
+
+    pub fn valen_bottom(&self) -> ValenBottom {
+        ValenBottom::from(*self)
     }
 }
