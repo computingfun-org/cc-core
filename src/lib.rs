@@ -53,11 +53,11 @@ impl Eq for Inches {}
 impl Eq for Millimeters {}
 
 const INCH_IN_MILLIMETERS: Number = 25.4;
-const MILLIMETERS_IN_INCH: Number = 1.0 / INCH_IN_MILLIMETERS;
+const MILLIMETER_IN_INCHES: Number = 1.0 / INCH_IN_MILLIMETERS;
 
 impl From<Millimeters> for Inches {
     fn from(m: Millimeters) -> Self {
-        Self::from(m.0 * MILLIMETERS_IN_INCH)
+        Self::from(m.0 * MILLIMETER_IN_INCHES)
     }
 }
 
