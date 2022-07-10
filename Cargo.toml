@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-open = "^3"
 derive_more = "^0"
 strum = { version = "^0", features = ["derive"] }
 strum_macros = "^0"
+open = { version = "^3", optional = true }

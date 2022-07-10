@@ -1,21 +1,39 @@
-use crate::drawer::{Depth, DrawerBox, Height, Width};
+use crate::drawer_box::{Depth, DrawerBox, Height, Width};
 use crate::Inches;
 use std::fmt::{Display, Formatter};
 
 impl Height {
     pub fn kbc(self) -> Inches {
         match self {
-            Height::S | Height::MS => Inches::from(3.0),
+            Height::S => Inches::from(3.0),
             Height::M => Inches::from(4.0),
             Height::L => Inches::from(6.0),
-            Height::XL | Height::FILE => Inches::from(10.0),
+            Height::XL => Inches::from(10.0),
         }
+    }
+}
+
+#[cfg(test)]
+mod width_tests {
+    use crate::drawer_box::Width;
+    use crate::Inches;
+
+    fn width_to_kbc(inches: f64) -> f64 {
+        Width::from(Inches::from(inches)).kbc().into()
+    }
+
+    #[test]
+    fn width() {
+        assert_eq!(width_to_kbc(18.0), 17.625);
+        assert_eq!(width_to_kbc(24.0), 23.625);
+        assert_eq!(width_to_kbc(30.0), 29.625);
+        assert_eq!(width_to_kbc(36.0), 35.625);
     }
 }
 
 impl Width {
     pub fn kbc(self) -> Inches {
-        self.inches() + Inches::from(-0.375)
+        Inches::from(self) - Inches::from(0.375)
     }
 }
 
@@ -52,11 +70,5 @@ impl From<DrawerBox> for KBCBox {
             width: drawer.width.kbc(),
             depth: drawer.depth.kbc(),
         }
-    }
-}
-
-impl DrawerBox {
-    pub fn kbc(self) -> KBCBox {
-        KBCBox::from(self)
     }
 }

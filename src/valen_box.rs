@@ -1,5 +1,5 @@
-use crate::drawer::{Depth, DrawerBox, Height, Width};
-use crate::Millimeters;
+use crate::drawer_box::{Depth, DrawerBox, Height, Width};
+use crate::{Inches, Millimeters, Number};
 use derive_more::Display;
 
 impl Depth {
@@ -22,42 +22,64 @@ impl Depth {
     }
 }
 
+#[cfg(test)]
+mod width_tests {
+    use crate::drawer_box::Width;
+    use crate::Inches;
+
+    fn width_from_inches(inches: f64) -> Width {
+        Width::from(Inches::from(inches))
+    }
+
+    fn box_width_from_inches(inches: f64) -> f64 {
+        f64::from(width_from_inches(inches).valen_box())
+    }
+
+    fn bottom_width_from_inches(inches: f64) -> f64 {
+        f64::from(width_from_inches(inches).valen_bottom())
+    }
+
+    #[test]
+    fn width_box() {
+        assert_eq!(box_width_from_inches(18.0), 441.0);
+        assert_eq!(box_width_from_inches(24.0), 594.0);
+        assert_eq!(box_width_from_inches(30.0), 746.0);
+        assert_eq!(box_width_from_inches(36.0), 898.0);
+    }
+
+    #[test]
+    fn width_bottom() {
+        assert_eq!(bottom_width_from_inches(18.0), 427.0);
+        assert_eq!(bottom_width_from_inches(24.0), 580.0);
+        assert_eq!(bottom_width_from_inches(30.0), 732.0);
+        assert_eq!(bottom_width_from_inches(36.0), 884.0);
+    }
+}
+
 impl Width {
     pub fn valen_box(self) -> Millimeters {
-        match self {
-            Width::W18 => Millimeters::from(441.0),
-            Width::W24 => Millimeters::from(594.0),
-            Width::W30 => Millimeters::from(746.0),
-            Width::W36 => Millimeters::from(898.0),
-            Width::Custom(_) => Millimeters::from(-1.0),
-        }
+        let width_inches = Inches::from(self);
+        let width_mm = Millimeters::from(width_inches);
+        let width_box = (Number::from(width_mm) - 16.0).round();
+        Millimeters::from(width_box)
     }
 
     pub fn valen_bottom(self) -> Millimeters {
-        match self {
-            Width::W18 => Millimeters::from(427.0),
-            Width::W24 => Millimeters::from(580.0),
-            Width::W30 => Millimeters::from(732.0),
-            Width::W36 => Millimeters::from(884.0),
-            Width::Custom(_) => Millimeters::from(-1.0),
-        }
+        let width_inches = Inches::from(self);
+        let width_mm = Millimeters::from(width_inches);
+        let width_box = (Number::from(width_mm) - 30.0).round();
+        Millimeters::from(width_box)
     }
 }
 
 impl Height {
     pub fn valen_box(self) -> Millimeters {
         match self {
-            Height::S | Height::MS => Millimeters::from(70.0),
+            Height::S => Millimeters::from(70.0),
             Height::M => Millimeters::from(115.0),
             Height::L => Millimeters::from(170.0),
-            Height::XL | Height::FILE => Millimeters::from(253.0),
+            Height::XL => Millimeters::from(253.0),
         }
-    }
-}
-
-impl DrawerBox {
-    pub fn valen(self) -> ValenBox {
-        ValenBox::from(self)
     }
 }
 
@@ -126,46 +148,46 @@ pub struct ValenBottom {
 }
 
 impl From<ValenBox> for ValenFront {
-    fn from(vbox: ValenBox) -> Self {
+    fn from(valen: ValenBox) -> Self {
         Self {
-            width: vbox.width,
-            height: vbox.height,
+            width: valen.width,
+            height: valen.height,
         }
     }
 }
 
 impl From<ValenBox> for ValenBack {
-    fn from(vbox: ValenBox) -> Self {
+    fn from(valen: ValenBox) -> Self {
         Self {
-            width: vbox.width,
-            height: vbox.height,
+            width: valen.width,
+            height: valen.height,
         }
     }
 }
 
 impl From<ValenBox> for ValenSideLogo {
-    fn from(vbox: ValenBox) -> Self {
+    fn from(valen: ValenBox) -> Self {
         Self {
-            depth: vbox.depth,
-            height: vbox.height,
+            depth: valen.depth,
+            height: valen.height,
         }
     }
 }
 
 impl From<ValenBox> for ValenSidePlane {
-    fn from(vbox: ValenBox) -> Self {
+    fn from(valen: ValenBox) -> Self {
         Self {
-            depth: vbox.depth,
-            height: vbox.height,
+            depth: valen.depth,
+            height: valen.height,
         }
     }
 }
 
 impl From<ValenBox> for ValenBottom {
-    fn from(vbox: ValenBox) -> Self {
+    fn from(valen: ValenBox) -> Self {
         Self {
-            depth: vbox.bottom_depth,
-            width: vbox.bottom_width,
+            depth: valen.bottom_depth,
+            width: valen.bottom_width,
         }
     }
 }
