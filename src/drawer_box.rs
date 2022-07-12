@@ -18,6 +18,28 @@ pub struct Width(Inches);
 
 impl Eq for Width {}
 
+impl Width {
+    fn w18() -> Self {
+        Width(Inches(18.0))
+    }
+
+    fn w24() -> Self {
+        Width(Inches(24.0))
+    }
+
+    fn w30() -> Self {
+        Width(Inches(30.0))
+    }
+
+    fn w36() -> Self {
+        Width(Inches(36.0))
+    }
+
+    fn custom(width: Inches) -> Self {
+        Width(width)
+    }
+}
+
 #[derive(
     Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, strum::Display, strum_macros::EnumIter, Hash,
 )]
@@ -28,6 +50,8 @@ pub enum Depth {
     D14,
     #[strum(serialize = "16\"")]
     D16,
+    //#[strum(serialize = "18\"")]
+    //D18,
     #[strum(serialize = "20\"")]
     D20,
 }
