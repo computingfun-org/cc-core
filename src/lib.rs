@@ -1,7 +1,8 @@
 extern crate core;
 
 use derive_more::{
-    Add, AddAssign, Display, From, FromStr, Into, Mul, MulAssign, Sub, SubAssign, Sum,
+    Add, AddAssign, Display, Div, DivAssign, From, FromStr, Into, Mul, MulAssign, Sub, SubAssign,
+    Sum,
 };
 use std::hash::{Hash, Hasher};
 
@@ -27,8 +28,10 @@ type Number = f64;
     Sub,
     Mul,
     Sum,
+    Div,
     AddAssign,
     SubAssign,
+    DivAssign,
     MulAssign,
 )]
 #[display(fmt = "{}\"", _0)]
@@ -52,6 +55,8 @@ pub struct Inches(Number);
     AddAssign,
     SubAssign,
     MulAssign,
+    Div,
+    DivAssign,
 )]
 #[display(fmt = "{}mm", _0)]
 pub struct Millimeters(Number);
