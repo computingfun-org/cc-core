@@ -56,7 +56,7 @@ pub enum Depth {
     D20,
 }
 
-#[derive(Copy, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 pub struct DrawerBox {
     pub height: Height,
     pub width: Width,
