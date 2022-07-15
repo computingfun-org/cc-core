@@ -12,6 +12,12 @@ pub enum Height {
     XL,
 }
 
+impl Default for Height {
+    fn default() -> Self {
+        Self::L
+    }
+}
+
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, From, Into, Display, Hash)]
 #[display(fmt = "{}", _0)]
 pub struct Width(Inches);
@@ -40,6 +46,12 @@ impl Width {
     }
 }
 
+impl Default for Width {
+    fn default() -> Self {
+        Self::w24()
+    }
+}
+
 #[derive(
     Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, strum::Display, strum_macros::EnumIter, Hash,
 )]
@@ -56,7 +68,13 @@ pub enum Depth {
     D20,
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
+impl Default for Depth {
+    fn default() -> Self {
+        Self::D14
+    }
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Default)]
 pub struct DrawerBox {
     pub height: Height,
     pub width: Width,
