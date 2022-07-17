@@ -89,3 +89,30 @@ impl Display for DrawerBox {
         ))
     }
 }
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Hash, Default)]
+pub struct DrawerBoxLine {
+    pub quantity: isize,
+    pub drawer_box: DrawerBox,
+}
+
+impl Display for DrawerBoxLine {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!("({})x {}", self.quantity, self.drawer_box))
+    }
+}
+
+impl DrawerBox {
+    pub fn line(self, qty: isize) -> DrawerBoxLine {
+        DrawerBoxLine {
+            quantity: qty,
+            drawer_box: self,
+        }
+    }
+}
+
+impl From<DrawerBox> for DrawerBoxLine {
+    fn from(drawer_box: DrawerBox) -> Self {
+        drawer_box.line(1)
+    }
+}
