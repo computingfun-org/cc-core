@@ -74,7 +74,7 @@ impl Default for Depth {
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Default)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Hash, Default)]
 pub struct DrawerBox {
     pub height: Height,
     pub width: Width,
