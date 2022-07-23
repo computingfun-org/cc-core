@@ -1,24 +1,34 @@
 use crate::Inches;
-use derive_more::{Display, From, Into};
+use derive_more::{Display, Into};
 use std::fmt::{Display, Formatter};
 
 #[derive(
-    Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, strum::Display, strum_macros::EnumIter, Hash,
+    Debug,
+    Default,
+    Copy,
+    Clone,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    strum::Display,
+    strum_macros::EnumIter,
+    Hash,
 )]
 pub enum Height {
     S,
     M,
+    #[default]
     L,
     XL,
 }
 
-impl Default for Height {
-    fn default() -> Self {
-        Self::L
-    }
+pub fn height_iter() -> HeightIter {
+    use strum::IntoEnumIterator;
+    Height::iter()
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, PartialOrd, From, Into, Display, Hash)]
+#[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Into, Display, Hash)]
 #[display(fmt = "{}", _0)]
 pub struct Width(Inches);
 
@@ -46,6 +56,10 @@ impl Width {
     }
 }
 
+pub fn width_iter() -> Vec<Width> {
+    vec![Width::w18(), Width::w24(), Width::w30(), Width::w36()]
+}
+
 impl Default for Width {
     fn default() -> Self {
         Self::w24()
@@ -53,11 +67,22 @@ impl Default for Width {
 }
 
 #[derive(
-    Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, strum::Display, strum_macros::EnumIter, Hash,
+    Debug,
+    Default,
+    Copy,
+    Clone,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    strum::Display,
+    strum_macros::EnumIter,
+    Hash,
 )]
 pub enum Depth {
     #[strum(serialize = "12\"")]
     D12,
+    #[default]
     #[strum(serialize = "14\"")]
     D14,
     #[strum(serialize = "16\"")]
@@ -68,10 +93,9 @@ pub enum Depth {
     D20,
 }
 
-impl Default for Depth {
-    fn default() -> Self {
-        Self::D14
-    }
+pub fn depth_iter() -> DepthIter {
+    use strum::IntoEnumIterator;
+    Depth::iter()
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Hash, Default)]
@@ -90,9 +114,25 @@ impl Display for DrawerBox {
     }
 }
 
+pub fn drawer_box_iter() -> Vec<DrawerBox> {
+    let mut drawer_boxes = vec![];
+    for height in height_iter() {
+        for width in width_iter() {
+            for depth in depth_iter() {
+                drawer_boxes.push(DrawerBox {
+                    height,
+                    width,
+                    depth,
+                });
+            }
+        }
+    }
+    drawer_boxes
+}
+
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Hash, Default)]
 pub struct DrawerBoxLine<T: From<DrawerBox>> {
-    pub quantity: isize,
+    pub quantity: usize,
     pub drawer_box: T,
 }
 

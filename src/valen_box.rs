@@ -28,7 +28,7 @@ mod width_tests {
     use crate::Inches;
 
     fn width_from_inches(inches: f64) -> Width {
-        Width::from(Inches::from(inches))
+        Width::custom(Inches::from(inches))
     }
 
     fn box_width_from_inches(inches: f64) -> f64 {

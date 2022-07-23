@@ -19,7 +19,7 @@ mod width_tests {
     use crate::Inches;
 
     fn width_to_kbc(inches: f64) -> f64 {
-        Width::from(Inches::from(inches)).kbc().into()
+        Width::custom(Inches::from(inches)).kbc().into()
     }
 
     #[test]
