@@ -1,9 +1,19 @@
 use crate::Inches;
-use derive_more::{Display, From, Into};
+use derive_more::{Display, Into};
 use std::fmt::{Display, Formatter};
 
 #[derive(
-    Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, strum::Display, strum_macros::EnumIter, Hash,
+    Debug,
+    Default,
+    Copy,
+    Clone,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    strum::Display,
+    strum_macros::EnumIter,
+    Hash,
 )]
 pub enum Height {
     S,
@@ -121,22 +131,28 @@ pub fn drawer_box_iter() -> Vec<DrawerBox> {
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Hash, Default)]
-pub struct DrawerBoxLine<T: From<DrawerBox>> {
+pub struct DrawerBoxLine {
     pub quantity: usize,
-    pub drawer_box: T,
+    pub drawer_box: DrawerBox,
 }
 
-impl<T: From<DrawerBox> + Display> Display for DrawerBoxLine<T> {
+impl Display for DrawerBoxLine {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!("({})x {}", self.quantity, self.drawer_box))
     }
 }
 
-impl<T: From<DrawerBox>> From<T> for DrawerBoxLine<T> {
-    fn from(drawer_box: T) -> Self {
+impl DrawerBoxLine {
+    pub fn from<T: Into<DrawerBox>>(drawer_box: T, quantity: usize) -> Self {
         Self {
-            quantity: 1,
-            drawer_box,
+            quantity,
+            drawer_box: drawer_box.into(),
         }
+    }
+}
+
+impl<T: Into<DrawerBox>> From<T> for DrawerBoxLine {
+    fn from(drawer_box: T) -> Self {
+        Self::from(drawer_box, 1)
     }
 }
