@@ -1,19 +1,9 @@
 use crate::Inches;
-use derive_more::{Display, Into};
+use derive_more::{Display, From, Into};
 use std::fmt::{Display, Formatter};
 
 #[derive(
-    Debug,
-    Default,
-    Copy,
-    Clone,
-    PartialEq,
-    Eq,
-    PartialOrd,
-    Ord,
-    strum::Display,
-    strum_macros::EnumIter,
-    Hash,
+    Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, strum::Display, strum_macros::EnumIter, Hash,
 )]
 pub enum Height {
     S,
