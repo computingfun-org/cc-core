@@ -2,6 +2,15 @@ use crate::Inches;
 use derive_more::{Display, Into};
 use std::fmt::{Display, Formatter};
 
+pub const STANDARD_HEIGHTS: [Height; 4] = [Height::S, Height::M, Height::L, Height::XL];
+pub const STANDARD_WIDTHS: [Width; 4] = [
+    Width::standard_18(),
+    Width::standard_24(),
+    Width::standard_30(),
+    Width::standard_36(),
+];
+pub const STANDARD_DEPTHS: [Depth; 2] = [Depth::D14, Depth::D20];
+
 #[derive(
     Debug,
     Default,
@@ -23,11 +32,6 @@ pub enum Height {
     XL,
 }
 
-pub fn height_iter() -> HeightIter {
-    use strum::IntoEnumIterator;
-    Height::iter()
-}
-
 #[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Into, Display, Hash)]
 #[display(fmt = "{}", _0)]
 pub struct Width(Inches);
@@ -35,19 +39,19 @@ pub struct Width(Inches);
 impl Eq for Width {}
 
 impl Width {
-    pub fn w18() -> Self {
+    pub const fn standard_18() -> Self {
         Width(Inches(18.0))
     }
 
-    pub fn w24() -> Self {
+    pub const fn standard_24() -> Self {
         Width(Inches(24.0))
     }
 
-    pub fn w30() -> Self {
+    pub const fn standard_30() -> Self {
         Width(Inches(30.0))
     }
 
-    pub fn w36() -> Self {
+    pub const fn standard_36() -> Self {
         Width(Inches(36.0))
     }
 
@@ -56,13 +60,9 @@ impl Width {
     }
 }
 
-pub fn width_iter() -> Vec<Width> {
-    vec![Width::w18(), Width::w24(), Width::w30(), Width::w36()]
-}
-
 impl Default for Width {
     fn default() -> Self {
-        Self::w24()
+        Self::standard_24()
     }
 }
 
@@ -93,11 +93,6 @@ pub enum Depth {
     D20,
 }
 
-pub fn depth_iter() -> DepthIter {
-    use strum::IntoEnumIterator;
-    Depth::iter()
-}
-
 #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Hash, Default)]
 pub struct DrawerBox {
     pub height: Height,
@@ -111,48 +106,5 @@ impl Display for DrawerBox {
             "{} {} x {}",
             self.height, self.width, self.depth
         ))
-    }
-}
-
-pub fn drawer_box_iter() -> Vec<DrawerBox> {
-    let mut drawer_boxes = vec![];
-    for height in height_iter() {
-        for width in width_iter() {
-            for depth in depth_iter() {
-                drawer_boxes.push(DrawerBox {
-                    height,
-                    width,
-                    depth,
-                });
-            }
-        }
-    }
-    drawer_boxes
-}
-
-#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Hash, Default)]
-pub struct DrawerBoxLine {
-    pub quantity: usize,
-    pub drawer_box: DrawerBox,
-}
-
-impl Display for DrawerBoxLine {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        f.write_fmt(format_args!("({})x {}", self.quantity, self.drawer_box))
-    }
-}
-
-impl DrawerBoxLine {
-    pub fn from<T: Into<DrawerBox>>(drawer_box: T, quantity: usize) -> Self {
-        Self {
-            quantity,
-            drawer_box: drawer_box.into(),
-        }
-    }
-}
-
-impl<T: Into<DrawerBox>> From<T> for DrawerBoxLine {
-    fn from(drawer_box: T) -> Self {
-        Self::from(drawer_box, 1)
     }
 }
