@@ -1,6 +1,4 @@
-use crate::Inches;
-use derive_more::{Display, Into};
-use std::fmt::{Display, Formatter};
+use crate::{Inches, Millimeters};
 
 pub const STANDARD_HEIGHTS: [Height; 4] = [Height::S, Height::M, Height::L, Height::XL];
 pub const STANDARD_WIDTHS: [Width; 4] = [
@@ -21,8 +19,9 @@ pub const STANDARD_DEPTHS: [Depth; 2] = [Depth::D14, Depth::D20];
     PartialOrd,
     Ord,
     strum::Display,
-    strum_macros::EnumIter,
     Hash,
+    serde::Serialize,
+    serde::Deserialize,
 )]
 pub enum Height {
     S,
@@ -32,13 +31,33 @@ pub enum Height {
     XL,
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, PartialOrd, Into, Display, Hash)]
+#[derive(
+    Debug,
+    Copy,
+    Clone,
+    PartialEq,
+    PartialOrd,
+    derive_more::From,
+    derive_more::Into,
+    derive_more::Display,
+    Hash,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[display(fmt = "{}", _0)]
 pub struct Width(Inches);
 
 impl Eq for Width {}
 
 impl Width {
+    pub fn inches(self) -> Inches {
+        self.0
+    }
+
+    pub fn millimeters(self) -> Millimeters {
+        self.inches().into_millimeters()
+    }
+
     pub const fn standard_18() -> Self {
         Width(Inches(18.0))
     }
@@ -58,11 +77,21 @@ impl Width {
     pub fn custom(width: Inches) -> Self {
         Width(width)
     }
+
+    pub fn custom_mm(width: Millimeters) -> Self {
+        Self::from(width)
+    }
 }
 
 impl Default for Width {
     fn default() -> Self {
         Self::standard_24()
+    }
+}
+
+impl From<Millimeters> for Width {
+    fn from(mm: Millimeters) -> Self {
+        Self::from(Inches::from(mm))
     }
 }
 
@@ -76,8 +105,9 @@ impl Default for Width {
     PartialOrd,
     Ord,
     strum::Display,
-    strum_macros::EnumIter,
     Hash,
+    serde::Serialize,
+    serde::Deserialize,
 )]
 pub enum Depth {
     #[strum(serialize = "12\"")]
@@ -93,18 +123,34 @@ pub enum Depth {
     D20,
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Hash, Default)]
+#[derive(
+    Debug, Clone, PartialEq, Eq, PartialOrd, Hash, Default, serde::Serialize, serde::Deserialize,
+)]
 pub struct DrawerBox {
     pub height: Height,
     pub width: Width,
     pub depth: Depth,
 }
 
-impl Display for DrawerBox {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+impl std::fmt::Display for DrawerBox {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!(
             "{} {} x {}",
             self.height, self.width, self.depth
         ))
+    }
+}
+
+#[derive(
+    Debug, Clone, PartialEq, Eq, PartialOrd, Hash, Default, serde::Serialize, serde::Deserialize,
+)]
+pub struct DrawerBoxLine {
+    pub quantity: isize,
+    pub drawer_box: DrawerBox,
+}
+
+impl std::fmt::Display for DrawerBoxLine {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!("({}x) {}", self.quantity, self.drawer_box))
     }
 }

@@ -1,6 +1,5 @@
 use crate::drawer_box::{Depth, DrawerBox, Height, Width};
 use crate::Inches;
-use std::fmt::{Display, Formatter};
 
 impl Height {
     pub fn kbc(self) -> Inches {
@@ -31,9 +30,11 @@ mod width_tests {
     }
 }
 
+const WIDTH_OFFSET: Inches = Inches(0.375);
+
 impl Width {
     pub fn kbc(self) -> Inches {
-        Inches::from(self) - Inches::from(0.375)
+        self.inches() - WIDTH_OFFSET
     }
 }
 
@@ -48,14 +49,17 @@ impl Depth {
     }
 }
 
+#[derive(
+    Debug, Clone, PartialEq, Eq, PartialOrd, Hash, Default, serde::Serialize, serde::Deserialize,
+)]
 pub struct KBCBox {
     pub height: Inches,
     pub width: Inches,
     pub depth: Inches,
 }
 
-impl Display for KBCBox {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+impl std::fmt::Display for KBCBox {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.write_fmt(format_args!(
             "{} x {} x {}",
             self.height, self.width, self.depth

@@ -1,12 +1,23 @@
-use derive_more::{Display, From, FromStr, Into};
-
 #[derive(
-    Default, Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, From, Into, FromStr, Display,
+    Default,
+    Debug,
+    Copy,
+    Clone,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    derive_more::From,
+    derive_more::Into,
+    derive_more::FromStr,
+    derive_more::Display,
+    serde::Serialize,
+    serde::Deserialize,
 )]
 #[display(fmt = "Job # {}", _0)]
 pub struct JobNumber(usize);
 
-#[derive(Clone, PartialEq, Eq)]
+#[derive(Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct JobURL(String);
 
 impl JobURL {

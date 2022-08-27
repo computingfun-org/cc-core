@@ -1,6 +1,5 @@
 use crate::drawer_box::{Depth, DrawerBox, Height, Width};
-use crate::{Inches, Millimeters, Number};
-use derive_more::Display;
+use crate::Millimeters;
 
 impl Depth {
     pub fn valen_box(self) -> Millimeters {
@@ -58,17 +57,11 @@ mod width_tests {
 
 impl Width {
     pub fn valen_box(self) -> Millimeters {
-        let width_inches = Inches::from(self);
-        let width_mm = Millimeters::from(width_inches);
-        let width_box = (Number::from(width_mm) - 16.0).round();
-        Millimeters::from(width_box)
+        Millimeters::from((self.millimeters().into_number() - 16.0).round())
     }
 
     pub fn valen_bottom(self) -> Millimeters {
-        let width_inches = Inches::from(self);
-        let width_mm = Millimeters::from(width_inches);
-        let width_box = (Number::from(width_mm) - 30.0).round();
-        Millimeters::from(width_box)
+        Millimeters::from((self.millimeters().into_number() - 30.0).round())
     }
 }
 
@@ -83,7 +76,17 @@ impl Height {
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Display)]
+#[derive(
+    Debug,
+    Clone,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Hash,
+    derive_more::Display,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[display(
     fmt = "{} x {} x {} x {} x {}",
     width,
@@ -112,104 +115,129 @@ impl From<DrawerBox> for ValenBox {
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Display)]
+#[derive(
+    Debug,
+    Copy,
+    Clone,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Hash,
+    derive_more::Display,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[display(fmt = "{} x {}", width, height)]
 pub struct ValenFront {
     pub width: Millimeters,
     pub height: Millimeters,
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Display)]
+#[derive(
+    Debug,
+    Copy,
+    Clone,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Hash,
+    derive_more::Display,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[display(fmt = "{} x {}", width, height)]
 pub struct ValenBack {
     pub width: Millimeters,
     pub height: Millimeters,
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Display)]
+#[derive(
+    Debug,
+    Copy,
+    Clone,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Hash,
+    derive_more::Display,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[display(fmt = "{} x {}", depth, height)]
 pub struct ValenSideLogo {
     pub depth: Millimeters,
     pub height: Millimeters,
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Display)]
+#[derive(
+    Debug,
+    Copy,
+    Clone,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Hash,
+    derive_more::Display,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[display(fmt = "{} x {}", depth, height)]
 pub struct ValenSidePlane {
     pub depth: Millimeters,
     pub height: Millimeters,
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq, Hash, Display)]
+#[derive(
+    Debug,
+    Copy,
+    Clone,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Hash,
+    derive_more::Display,
+    serde::Serialize,
+    serde::Deserialize,
+)]
 #[display(fmt = "{} x {}", depth, width)]
 pub struct ValenBottom {
     pub depth: Millimeters,
     pub width: Millimeters,
 }
 
-impl From<ValenBox> for ValenFront {
-    fn from(valen: ValenBox) -> Self {
-        Self {
-            width: valen.width,
-            height: valen.height,
-        }
-    }
-}
-
-impl From<ValenBox> for ValenBack {
-    fn from(valen: ValenBox) -> Self {
-        Self {
-            width: valen.width,
-            height: valen.height,
-        }
-    }
-}
-
-impl From<ValenBox> for ValenSideLogo {
-    fn from(valen: ValenBox) -> Self {
-        Self {
-            depth: valen.depth,
-            height: valen.height,
-        }
-    }
-}
-
-impl From<ValenBox> for ValenSidePlane {
-    fn from(valen: ValenBox) -> Self {
-        Self {
-            depth: valen.depth,
-            height: valen.height,
-        }
-    }
-}
-
-impl From<ValenBox> for ValenBottom {
-    fn from(valen: ValenBox) -> Self {
-        Self {
-            depth: valen.bottom_depth,
-            width: valen.bottom_width,
-        }
-    }
-}
-
 impl ValenBox {
     pub fn front(&self) -> ValenFront {
-        ValenFront::from(*self)
+        ValenFront {
+            width: self.width,
+            height: self.height,
+        }
     }
 
     pub fn back(&self) -> ValenBack {
-        ValenBack::from(*self)
+        ValenBack {
+            width: self.width,
+            height: self.height,
+        }
     }
 
     pub fn side_logo(&self) -> ValenSideLogo {
-        ValenSideLogo::from(*self)
+        ValenSideLogo {
+            depth: self.depth,
+            height: self.height,
+        }
     }
 
     pub fn side_plane(&self) -> ValenSidePlane {
-        ValenSidePlane::from(*self)
+        ValenSidePlane {
+            depth: self.depth,
+            height: self.height,
+        }
     }
 
     pub fn bottom(&self) -> ValenBottom {
-        ValenBottom::from(*self)
+        ValenBottom {
+            depth: self.bottom_depth,
+            width: self.bottom_width,
+        }
     }
 }
