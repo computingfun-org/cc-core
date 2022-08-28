@@ -85,11 +85,11 @@ mod millimeters_to_inches_test {
         test(-406.4, -16.0);
     }
 
-    fn test(mm: Number, ich: Number) {
+    fn test(mm: Number, inc: Number) {
         let m = Millimeters::from(mm);
         let i = m.into_inches();
         let result = i.into_number();
-        assert_eq!(result, ich);
+        assert_eq!(result, inc, "{}mm -> {}\" | result:{}\"", mm, inc, result);
     }
 }
 
@@ -117,7 +117,7 @@ mod inches_to_millimeters_test {
         let i = Inches::from(inc);
         let m = i.into_millimeters();
         let result = m.into_number();
-        assert_eq!(result, mm);
+        assert_eq!(result, mm, "{}\" -> {}mm | result:{}mm", inc, mm, result);
     }
 }
 

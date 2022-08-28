@@ -103,8 +103,8 @@ pub struct ValenBox {
     pub bottom_width: Millimeters,
 }
 
-impl From<DrawerBox> for ValenBox {
-    fn from(drawer: DrawerBox) -> Self {
+impl From<&DrawerBox> for ValenBox {
+    fn from(drawer: &DrawerBox) -> Self {
         Self {
             width: drawer.width.valen_box(),
             height: drawer.height.valen_box(),

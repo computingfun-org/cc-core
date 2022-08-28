@@ -67,8 +67,8 @@ impl std::fmt::Display for KBCBox {
     }
 }
 
-impl From<DrawerBox> for KBCBox {
-    fn from(drawer: DrawerBox) -> Self {
+impl From<&DrawerBox> for KBCBox {
+    fn from(drawer: &DrawerBox) -> Self {
         KBCBox {
             height: drawer.height.kbc(),
             width: drawer.width.kbc(),
