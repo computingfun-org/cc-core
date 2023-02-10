@@ -1,4 +1,4 @@
-use chrono::{Datelike, Days, Local, NaiveDate, Weekday};
+use chrono::{Datelike, Days, NaiveDate, Weekday};
 use derive_more::{
     Add, AddAssign, Constructor, Display, From, FromStr, Into, Not, Sub, SubAssign, Sum,
 };
@@ -86,10 +86,32 @@ pub fn sub_lead(start: NaiveDate, lead: LeadTime) -> Option<NaiveDate> {
     Some(date)
 }
 
-pub fn now_plus_lead(lead: LeadTime) -> Option<NaiveDate> {
-    add_lead(Local::now().date_naive(), lead)
+#[derive(Debug, Constructor, Clone, Serialize, Deserialize)]
+pub struct LeadTimeLine {
+    pub flip: LeadTime,
+    pub process: LeadTime,
+    pub manufacturer: LeadTime,
+    pub custom: LeadTime,
 }
 
-pub fn now_sub_lead(lead: LeadTime) -> Option<NaiveDate> {
-    sub_lead(Local::now().date_naive(), lead)
+impl LeadTimeLine {
+    pub fn order(&self) -> LeadTime {
+        std::cmp::max(self.manufacturer, self.custom)
+    }
+
+    pub fn process_plus_order(&self) -> LeadTime {
+        self.order() + self.process
+    }
+
+    pub fn total(&self) -> LeadTime {
+        self.process_plus_order() + self.flip
+    }
+
+    pub fn min_install(&self, start: NaiveDate) -> Option<NaiveDate> {
+        add_lead(start, self.total())
+    }
+
+    pub fn flip_by(&self, install: NaiveDate) -> Option<NaiveDate> {
+        sub_lead(install, self.process_plus_order())
+    }
 }
