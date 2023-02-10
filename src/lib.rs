@@ -4,6 +4,8 @@ pub mod drawer_box;
 pub mod job;
 pub mod kbc;
 pub mod lead_time;
+pub mod manufacturer;
+pub mod schedule_note;
 pub mod valen_box;
 
 type Number = f64;
