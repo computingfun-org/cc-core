@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(
     Debug,
+    Default,
     Constructor,
     From,
     Into,
@@ -86,7 +87,7 @@ pub fn sub_lead(start: NaiveDate, lead: LeadTime) -> Option<NaiveDate> {
     Some(date)
 }
 
-#[derive(Debug, Constructor, Clone, Serialize, Deserialize)]
+#[derive(Debug, Default, Constructor, Clone, Serialize, Deserialize)]
 pub struct LeadTimeLine {
     pub flip: LeadTime,
     pub process: LeadTime,
