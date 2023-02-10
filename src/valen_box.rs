@@ -4,18 +4,18 @@ use crate::Millimeters;
 impl Depth {
     pub fn valen_box(self) -> Millimeters {
         match self {
-            Depth::D12 => Millimeters::from(-1.0),
+            Depth::D12 => todo!(),
             Depth::D14 => Millimeters::from(327.0),
-            Depth::D16 => Millimeters::from(-1.0),
+            Depth::D16 => todo!(),
             Depth::D20 => Millimeters::from(487.0),
         }
     }
 
     pub fn valen_bottom(self) -> Millimeters {
         match self {
-            Depth::D12 => Millimeters::from(-1.0),
+            Depth::D12 => todo!(),
             Depth::D14 => Millimeters::from(318.0),
-            Depth::D16 => Millimeters::from(-1.0),
+            Depth::D16 => todo!(),
             Depth::D20 => Millimeters::from(478.0),
         }
     }

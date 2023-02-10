@@ -1,5 +1,6 @@
+use std::num::NonZeroU128;
+
 #[derive(
-    Default,
     Debug,
     Copy,
     Clone,
@@ -14,8 +15,8 @@
     serde::Serialize,
     serde::Deserialize,
 )]
-#[display(fmt = "Job # {}", _0)]
-pub struct JobNumber(usize);
+#[display(fmt = "{}", _0)]
+pub struct JobNumber(NonZeroU128);
 
 #[derive(Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct JobURL(String);
@@ -35,7 +36,7 @@ impl<T: Into<JobNumber>> From<T> for JobURL {
     fn from(job_number: T) -> Self {
         JobURL(format!(
             "https://dashboard.calclosets.com/?j={}",
-            usize::from(job_number.into())
+            job_number.into()
         ))
     }
 }
