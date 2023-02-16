@@ -5,7 +5,8 @@ pub mod job;
 pub mod kbc;
 pub mod lead_time;
 pub mod manufacturer;
-pub mod schedule_note;
+pub mod naive_date_serde;
+pub mod schedule;
 pub mod valen_box;
 
 type Number = f64;

@@ -1,12 +1,13 @@
+use serde::{Deserialize, Serialize};
+
 use crate::lead_time::LeadTime;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
 pub enum Manufacturer {
     #[default]
     None,
     Central,
     Local,
-    CustomOnly,
 }
 
 impl std::fmt::Display for Manufacturer {
@@ -15,7 +16,6 @@ impl std::fmt::Display for Manufacturer {
             Manufacturer::None => "None",
             Manufacturer::Central => "Central (EMC/XMC)",
             Manufacturer::Local => "Local (CabCon)",
-            Manufacturer::CustomOnly => "Custom Only",
         })
     }
 }
@@ -26,16 +26,6 @@ impl Manufacturer {
             Manufacturer::None => LeadTime::new(0),
             Manufacturer::Central => LeadTime::new(15),
             Manufacturer::Local => LeadTime::new(10),
-            Manufacturer::CustomOnly => LeadTime::new(0),
-        }
-    }
-
-    pub fn note(&self) -> &str {
-        match self {
-            Manufacturer::None => "",
-            Manufacturer::Central => "EMC",
-            Manufacturer::Local => "CabCon",
-            Manufacturer::CustomOnly => "Custom Only",
         }
     }
 }

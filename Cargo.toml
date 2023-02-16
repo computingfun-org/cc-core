@@ -9,4 +9,5 @@ strum = { version = "^0", features = ["derive"] }
 strum_macros = "^0"
 open = { version = "^3", optional = true }
 serde = { version = "^1", features = ["derive"] }
-chrono = "^0"
+chrono = { version = "^0" }
+human_format = "^1"

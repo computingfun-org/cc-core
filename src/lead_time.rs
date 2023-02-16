@@ -1,46 +1,47 @@
-use chrono::{Datelike, Days, NaiveDate, Weekday};
-use derive_more::{
-    Add, AddAssign, Constructor, Display, From, FromStr, Into, Not, Sub, SubAssign, Sum,
-};
-use serde::{Deserialize, Serialize};
+use chrono::NaiveDate;
 
 #[derive(
     Debug,
     Default,
-    Constructor,
-    From,
-    Into,
+    derive_more::Constructor,
+    derive_more::From,
+    derive_more::Into,
     Clone,
     Copy,
-    FromStr,
-    Add,
-    Sub,
-    Display,
-    Not,
-    Sum,
-    AddAssign,
-    SubAssign,
+    derive_more::FromStr,
+    derive_more::Add,
+    derive_more::Sub,
+    derive_more::Display,
+    derive_more::Not,
+    derive_more::Sum,
+    derive_more::AddAssign,
+    derive_more::SubAssign,
     PartialEq,
     Eq,
     PartialOrd,
     Ord,
-    Serialize,
-    Deserialize,
+    serde::Serialize,
+    serde::Deserialize,
 )]
-pub struct LeadTime(usize);
+pub struct LeadTime(isize);
 
-const LEAD_DAYS_PER_WEEK: usize = 5;
+const LEAD_DAYS_PER_WEEK: isize = 5;
 
 impl LeadTime {
-    pub fn weeks(&self) -> usize {
+    pub fn weeks(&self) -> isize {
         self.0 / LEAD_DAYS_PER_WEEK
     }
-}
 
-impl TryFrom<LeadTime> for Days {
-    type Error = std::num::TryFromIntError;
-    fn try_from(value: LeadTime) -> Result<Self, Self::Error> {
-        Ok(Self::new(value.0.try_into()?))
+    pub fn is_none(&self) -> bool {
+        self.0 == 0
+    }
+
+    pub fn is_some(&self) -> bool {
+        !self.is_none()
+    }
+
+    pub fn abs(&self) -> Self {
+        Self(self.0.abs())
     }
 }
 
@@ -65,11 +66,19 @@ pub fn is_workday(date: NaiveDate) -> bool {
 }
 
 pub fn is_weekend(date: NaiveDate) -> bool {
-    let weekday = date.weekday();
-    weekday == Weekday::Sat || weekday == Weekday::Sun
+    let weekday = chrono::Datelike::weekday(&date);
+    weekday == chrono::Weekday::Sat || weekday == chrono::Weekday::Sun
 }
 
 pub fn add_lead(start: NaiveDate, lead: LeadTime) -> Option<NaiveDate> {
+    if lead.is_none() {
+        return Some(start);
+    }
+
+    if lead.0 < 0 {
+        return sub_lead(start, lead.abs());
+    }
+
     let mut date = skip_weekends_forwards(start)?;
     for _ in 0..lead.0 {
         date = date.succ_opt()?;
@@ -79,6 +88,14 @@ pub fn add_lead(start: NaiveDate, lead: LeadTime) -> Option<NaiveDate> {
 }
 
 pub fn sub_lead(start: NaiveDate, lead: LeadTime) -> Option<NaiveDate> {
+    if lead.is_none() {
+        return Some(start);
+    }
+
+    if lead.0 < 0 {
+        return add_lead(start, lead.abs());
+    }
+
     let mut date = skip_weekends_backwards(start)?;
     for _ in 0..lead.0 {
         date = date.pred_opt()?;
@@ -87,32 +104,43 @@ pub fn sub_lead(start: NaiveDate, lead: LeadTime) -> Option<NaiveDate> {
     Some(date)
 }
 
-#[derive(Debug, Default, Constructor, Clone, Serialize, Deserialize)]
-pub struct LeadTimeLine {
-    pub flip: LeadTime,
-    pub process: LeadTime,
-    pub manufacturer: LeadTime,
-    pub custom: LeadTime,
+#[derive(
+    Debug,
+    derive_more::From,
+    Clone,
+    Copy,
+    derive_more::Display,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    serde::Serialize,
+    serde::Deserialize,
+)]
+pub enum LeadOrDate {
+    Lead(LeadTime),
+    #[serde(with = "crate::naive_date_serde")]
+    Date(NaiveDate),
 }
 
-impl LeadTimeLine {
-    pub fn order(&self) -> LeadTime {
-        std::cmp::max(self.manufacturer, self.custom)
+impl LeadOrDate {
+    pub fn lead_or<F>(self, f: F) -> LeadTime
+    where
+        F: FnOnce(NaiveDate) -> LeadTime,
+    {
+        match self {
+            LeadOrDate::Lead(lead) => lead,
+            LeadOrDate::Date(date) => f(date),
+        }
     }
 
-    pub fn process_plus_order(&self) -> LeadTime {
-        self.order() + self.process
-    }
-
-    pub fn total(&self) -> LeadTime {
-        self.process_plus_order() + self.flip
-    }
-
-    pub fn min_install(&self, start: NaiveDate) -> Option<NaiveDate> {
-        add_lead(start, self.total())
-    }
-
-    pub fn flip_by(&self, install: NaiveDate) -> Option<NaiveDate> {
-        sub_lead(install, self.process_plus_order())
+    pub fn date_or<F>(self, f: F) -> NaiveDate
+    where
+        F: FnOnce(LeadTime) -> NaiveDate,
+    {
+        match self {
+            LeadOrDate::Lead(lead) => f(lead),
+            LeadOrDate::Date(date) => date,
+        }
     }
 }
