@@ -4,10 +4,10 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-derive_more = "^0"
+derive_more = { version = "^0" }
 strum = { version = "^0", features = ["derive"] }
-strum_macros = "^0"
+strum_macros = { version = "^0" }
 open = { version = "^3", optional = true }
 serde = { version = "^1", features = ["derive"] }
 chrono = { version = "^0" }
-human_format = "^1"
+human_format = { version = "^1" }
