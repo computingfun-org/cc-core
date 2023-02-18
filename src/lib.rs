@@ -1,13 +1,7 @@
 extern crate core;
 
-pub mod drawer_box;
-pub mod job;
-pub mod kbc;
-pub mod lead_time;
-pub mod manufacturer;
-pub mod naive_date_serde;
+pub mod drawers;
 pub mod schedule;
-pub mod valen_box;
 
 type Number = f64;
 
@@ -154,5 +148,44 @@ impl std::hash::Hash for Inches {
 impl std::hash::Hash for Millimeters {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
         format!("{}", self.0).hash(state);
+    }
+}
+
+#[derive(
+    Debug,
+    Copy,
+    Clone,
+    PartialEq,
+    Eq,
+    PartialOrd,
+    Ord,
+    derive_more::From,
+    derive_more::Into,
+    derive_more::FromStr,
+    derive_more::Display,
+    serde::Serialize,
+    serde::Deserialize,
+)]
+#[display(fmt = "{}", _0)]
+pub struct JobNumber(std::num::NonZeroUsize);
+
+impl JobNumber {
+    pub fn url(&self) -> JobURL {
+        JobURL(format!("https://dashboard.calclosets.com/?j={}", self.0))
+    }
+}
+
+#[derive(Clone, PartialEq, Eq, derive_more::Display, serde::Serialize, serde::Deserialize)]
+#[display(fmt = "{}", _0)]
+pub struct JobURL(String);
+
+impl JobURL {
+    pub fn as_str(&self) -> &str {
+        self.0.as_str()
+    }
+
+    #[cfg(feature = "open")]
+    pub fn open(&self) -> Option<std::io::Error> {
+        open::that(&self.as_str()).err()
     }
 }

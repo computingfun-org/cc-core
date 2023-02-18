@@ -119,7 +119,7 @@ pub fn sub_lead(start: NaiveDate, lead: LeadTime) -> Option<NaiveDate> {
 )]
 pub enum LeadOrDate {
     Lead(LeadTime),
-    #[serde(with = "crate::naive_date_serde")]
+    #[serde(with = "super::naive_date_serde")]
     Date(NaiveDate),
 }
 

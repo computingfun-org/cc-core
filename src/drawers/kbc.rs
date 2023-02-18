@@ -1,5 +1,6 @@
-use crate::drawer_box::{Depth, DrawerBox, Height, Width};
 use crate::Inches;
+
+use super::drawer_box::{Depth, DrawerBox, Height, Width};
 
 impl Height {
     pub fn kbc(self) -> Inches {
@@ -14,8 +15,7 @@ impl Height {
 
 #[cfg(test)]
 mod width_tests {
-    use crate::drawer_box::Width;
-    use crate::Inches;
+    use crate::{drawers::drawer_box::Width, Inches};
 
     fn width_to_kbc(inches: f64) -> f64 {
         Width::custom(Inches::from(inches)).kbc().into()
