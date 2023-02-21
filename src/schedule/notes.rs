@@ -1,5 +1,3 @@
-use std::num::NonZeroUsize;
-
 use non_empty_string::NonEmptyString;
 
 use super::lead_time::LeadTime;
@@ -14,11 +12,29 @@ pub struct Manufacturer {
     pub lead: LeadTime,
 }
 
+impl Manufacturer {
+    pub fn central() -> Self {
+        Self {
+            name: NonEmptyString::new(format!("Central (EMC/XMC)")).unwrap(),
+            note: NonEmptyString::new(format!("EMC")).unwrap(),
+            lead: LeadTime::new(15),
+        }
+    }
+
+    pub fn local() -> Self {
+        Self {
+            name: NonEmptyString::new(format!("Local (CabCon)")).unwrap(),
+            note: NonEmptyString::new(format!("CabCon")).unwrap(),
+            lead: LeadTime::new(10),
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct Notes {
     pub tags: Vec<NonEmptyString>,
     pub pricing: usize,
-    pub spaces: Option<NonZeroUsize>,
+    pub spaces: usize,
     pub access: NonEmptyString,
     pub tear_out: NonEmptyString,
     pub manufacturer: Manufacturer,
@@ -50,7 +66,7 @@ impl Notes {
     }
 
     pub fn to_string_spaces(&self) -> String {
-        format!("{} space(s)", self.spaces.map_or(0, |num| num.get()))
+        format!("{} space(s)", self.spaces)
     }
 
     pub fn to_string_access(&self) -> String {
