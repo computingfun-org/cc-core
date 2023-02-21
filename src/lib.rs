@@ -29,6 +29,7 @@ type Number = f64;
     serde::Deserialize,
 )]
 #[display(fmt = "{}\"", _0)]
+#[repr(transparent)]
 pub struct Inches(Number);
 
 #[derive(
@@ -55,6 +56,7 @@ pub struct Inches(Number);
     serde::Deserialize,
 )]
 #[display(fmt = "{}mm", _0)]
+#[repr(transparent)]
 pub struct Millimeters(Number);
 
 impl Eq for Inches {}
@@ -167,6 +169,7 @@ impl std::hash::Hash for Millimeters {
     serde::Deserialize,
 )]
 #[display(fmt = "{}", _0)]
+#[repr(transparent)]
 pub struct JobNumber(std::num::NonZeroUsize);
 
 impl JobNumber {
@@ -177,6 +180,7 @@ impl JobNumber {
 
 #[derive(Clone, PartialEq, Eq, derive_more::Display, serde::Serialize, serde::Deserialize)]
 #[display(fmt = "{}", _0)]
+#[repr(transparent)]
 pub struct JobURL(String);
 
 impl JobURL {
