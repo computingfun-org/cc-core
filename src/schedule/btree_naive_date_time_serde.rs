@@ -1,6 +1,7 @@
 use std::collections::BTreeSet;
 
 use chrono::NaiveDateTime;
+
 use serde::{de::Error, Deserialize, Deserializer, Serialize, Serializer};
 
 const FORMAT: &'static str = "%+";
@@ -27,6 +28,7 @@ where
     let mut btree = BTreeSet::new();
     for result in String::deserialize(deserializer)?
         .split(SEPARATOR)
+        .filter(|s| !s.is_empty())
         .map(|s| {
             NaiveDateTime::parse_from_str(s, FORMAT)
                 .map_err(|err| D::Error::custom(err.to_string()))
