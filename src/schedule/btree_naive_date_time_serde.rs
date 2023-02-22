@@ -4,7 +4,7 @@ use chrono::NaiveDateTime;
 
 use serde::{de::Error, Deserialize, Deserializer, Serialize, Serializer};
 
-const FORMAT: &'static str = "%+";
+const FORMAT: &'static str = "%c";
 const SEPARATOR: &'static str = " | ";
 
 pub fn serialize<S>(btree: &BTreeSet<NaiveDateTime>, serializer: S) -> Result<S::Ok, S::Error>
