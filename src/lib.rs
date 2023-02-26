@@ -187,9 +187,4 @@ impl JobURL {
     pub fn as_str(&self) -> &str {
         self.0.as_str()
     }
-
-    #[cfg(feature = "open")]
-    pub fn open(&self) -> Option<std::io::Error> {
-        open::that(&self.as_str()).err()
-    }
 }
