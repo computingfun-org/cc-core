@@ -1,4 +1,4 @@
-use std::num::NonZeroUsize;
+use std::{num::NonZeroUsize, panic};
 
 use chrono::{NaiveDate, NaiveDateTime};
 use non_empty_string::NonEmptyString;
@@ -128,9 +128,10 @@ impl Schedule {
     pub fn to_string_pricing(&self) -> Option<NonEmptyString> {
         NonEmptyString::new(format!(
             "${}",
-            human_format::Formatter::new()
+            panic::catch_unwind(move || human_format::Formatter::new()
                 .with_decimals(1)
-                .format(self.pricing?.get() as f64)
+                .format(self.pricing.unwrap().get() as f64))
+            .ok()?
         ))
         .ok()
     }
