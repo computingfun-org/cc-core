@@ -1,4 +1,4 @@
-use std::{num::NonZeroUsize, panic};
+use std::num::NonZeroUsize;
 
 use chrono::{NaiveDate, NaiveDateTime};
 use non_empty_string::NonEmptyString;
@@ -15,28 +15,40 @@ pub mod naive_date_serde;
 pub struct Schedule {
     pub job: JobNumber,
 
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub tags: Vec<NonEmptyString>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub pricing: Option<NonZeroUsize>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spaces: Option<NonZeroUsize>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub access: Option<NonEmptyString>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub tear_out: Option<NonEmptyString>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub manufacturer_name: Option<NonEmptyString>,
 
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub flip_lead: Option<LeadTime>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub process_lead: Option<LeadTime>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub manufacturer_lead: Option<LeadTime>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
     pub custom_lead: Option<LeadTime>,
 
-    #[serde(default)]
-    #[serde(with = "self::btree_naive_date_time_serde")]
+    #[serde(
+        with = "self::btree_naive_date_time_serde",
+        default,
+        skip_serializing_if = "std::collections::BTreeSet::is_empty"
+    )]
     pub install: std::collections::BTreeSet<NaiveDateTime>,
 
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub deposit: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub confimation: bool,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub flip: bool,
 }
 
@@ -126,14 +138,14 @@ impl Schedule {
     }
 
     pub fn to_string_pricing(&self) -> Option<NonEmptyString> {
-        NonEmptyString::new(format!(
-            "${}",
-            panic::catch_unwind(move || human_format::Formatter::new()
+        let pricing = self.pricing?.get() as f64;
+        let text = std::panic::catch_unwind(|| {
+            human_format::Formatter::new()
                 .with_decimals(1)
-                .format(self.pricing.unwrap().get() as f64))
-            .ok()?
-        ))
-        .ok()
+                .format(pricing)
+        })
+        .ok()?;
+        NonEmptyString::new(text).ok()
     }
 
     pub fn to_string_spaces(&self) -> Option<NonEmptyString> {
