@@ -11,14 +11,14 @@ pub mod btree_naive_date_time_serde;
 pub mod lead_time;
 pub mod naive_date_serde;
 
-#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct Schedule {
     pub job: JobNumber,
 
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub tags: Vec<NonEmptyString>,
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub pricing: Option<NonZeroUsize>,
+    #[serde(default, skip_serializing_if = "serde_skip_pricing")]
+    pub pricing: Option<f64>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub spaces: Option<NonZeroUsize>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -50,6 +50,13 @@ pub struct Schedule {
     pub confimation: bool,
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub flip: bool,
+}
+
+fn serde_skip_pricing(value: &Option<f64>) -> bool {
+    match value {
+        Some(inner) => !inner.is_normal(),
+        None => true,
+    }
 }
 
 impl Schedule {
@@ -138,7 +145,7 @@ impl Schedule {
     }
 
     pub fn to_string_pricing(&self) -> Option<NonEmptyString> {
-        let pricing = self.pricing?.get() as f64;
+        let pricing = self.pricing?;
         let text = std::panic::catch_unwind(|| {
             human_format::Formatter::new()
                 .with_decimals(1)
