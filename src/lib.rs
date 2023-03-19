@@ -178,7 +178,9 @@ impl JobNumber {
     }
 }
 
-#[derive(Clone, PartialEq, Eq, derive_more::Display, serde::Serialize, serde::Deserialize)]
+#[derive(
+    Debug, Clone, PartialEq, Eq, derive_more::Display, serde::Serialize, serde::Deserialize,
+)]
 #[display(fmt = "{}", _0)]
 #[repr(transparent)]
 pub struct JobURL(String);
