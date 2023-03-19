@@ -136,12 +136,17 @@ impl Schedule {
 }
 
 impl Schedule {
+    const SEP: &str = ", ";
+
     pub fn to_string_tags(&self) -> Option<NonEmptyString> {
-        let mut print = String::new();
-        for tag in self.tags.iter() {
-            print.push_str(&format!("{tag} "));
-        }
-        NonEmptyString::new(print).ok()
+        NonEmptyString::new(
+            self.tags
+                .iter()
+                .map(|tag| tag.as_str())
+                .collect::<Vec<&str>>()
+                .join(Self::SEP),
+        )
+        .ok()
     }
 
     pub fn to_string_pricing(&self) -> Option<NonEmptyString> {
@@ -173,11 +178,9 @@ impl Schedule {
             None => NonEmptyString::new(format!("no custom")).ok(),
         }
     }
-}
 
-impl std::fmt::Display for Schedule {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(
+    pub fn notes(&self) -> Option<NonEmptyString> {
+        NonEmptyString::new(
             vec![
                 self.to_string_tags(),
                 self.to_string_pricing(),
@@ -188,10 +191,22 @@ impl std::fmt::Display for Schedule {
                 self.to_string_custom(),
             ]
             .into_iter()
-            .map(|tag| tag.map_or(String::new(), |t| t.to_string()))
+            .flatten()
+            .map(|non_empty_string| non_empty_string.into_inner())
             .collect::<Vec<String>>()
-            .join(", ")
-            .as_str(),
+            .join(Self::SEP),
+        )
+        .ok()
+    }
+}
+
+impl std::fmt::Display for Schedule {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(
+            self.notes()
+                .as_ref()
+                .map(|notes| notes.as_str())
+                .unwrap_or_default(),
         )
     }
 }
