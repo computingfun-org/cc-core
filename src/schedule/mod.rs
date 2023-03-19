@@ -13,7 +13,7 @@ pub mod naive_date_serde;
 
 #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 pub struct Schedule {
-    pub job: JobNumber,
+    pub job_number: JobNumber,
 
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub tags: Vec<NonEmptyString>,
@@ -60,9 +60,9 @@ fn serde_skip_pricing(value: &Option<f64>) -> bool {
 }
 
 impl Schedule {
-    pub fn new(job: JobNumber) -> Self {
+    pub fn new(job_number: JobNumber) -> Self {
         Self {
-            job,
+            job_number,
             tags: Default::default(),
             pricing: Default::default(),
             spaces: Default::default(),
@@ -131,7 +131,7 @@ impl Schedule {
     }
 
     pub fn dash_link(&self) -> JobURL {
-        self.job.url()
+        self.job_number.url()
     }
 }
 
