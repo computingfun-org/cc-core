@@ -96,7 +96,7 @@ impl Schedule {
     }
 
     pub fn min_install(&self, now: NaiveDate) -> (NaiveDate, bool) {
-        let min = lead_time::Backwards::time(now, self.lead());
+        let min = lead_time::Forwards::time(now, self.lead());
         let check = match self.install.first() {
             Some(first) => first.date() >= min,
             None => false,
