@@ -157,7 +157,7 @@ impl Schedule {
                 .format(pricing)
         })
         .ok()?;
-        NonEmptyString::new(text).ok()
+        NonEmptyString::new(format!("${text}")).ok()
     }
 
     pub fn to_string_spaces(&self) -> Option<NonEmptyString> {
