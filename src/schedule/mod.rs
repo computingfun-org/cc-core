@@ -1,13 +1,12 @@
 use std::num::NonZeroUsize;
 
-use chrono::{NaiveDate, NaiveDateTime};
+use chrono::NaiveDate;
 use non_empty_string::NonEmptyString;
 
 use crate::{JobNumber, JobURL};
 
 use self::lead_time::{LeadTime, Stepper};
 
-pub mod btree_naive_date_time_serde;
 pub mod lead_time;
 pub mod naive_date_serde;
 
@@ -38,11 +37,11 @@ pub struct Schedule {
     pub custom_lead: Option<LeadTime>,
 
     #[serde(
-        with = "self::btree_naive_date_time_serde",
+        with = "naive_date_serde",
         default,
-        skip_serializing_if = "std::collections::BTreeSet::is_empty"
+        skip_serializing_if = "Option::is_none"
     )]
-    pub install: std::collections::BTreeSet<NaiveDateTime>,
+    pub install: Option<NaiveDate>,
 
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub deposit: bool,
@@ -97,8 +96,8 @@ impl Schedule {
 
     pub fn min_install(&self, now: NaiveDate) -> (NaiveDate, bool) {
         let min = lead_time::Forwards::time(now, self.lead());
-        let check = match self.install.first() {
-            Some(first) => first.date() >= min,
+        let check = match self.install {
+            Some(first) => first >= min,
             None => false,
         };
         (min, check)
@@ -106,7 +105,7 @@ impl Schedule {
 
     pub fn flip_by(&self) -> Option<NaiveDate> {
         Some(lead_time::Backwards::time(
-            self.install.first()?.date(),
+            self.install?,
             self.proccess_order_lead(),
         ))
     }
