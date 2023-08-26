@@ -130,7 +130,7 @@ impl Schedule {
     }
 
     pub fn dash_link(&self) -> JobURL {
-        self.job_number.url()
+        self.job_number.into()
     }
 }
 
