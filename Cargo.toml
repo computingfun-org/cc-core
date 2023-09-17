@@ -11,3 +11,4 @@ serde = { version = "^1", features = ["derive"] }
 chrono = { version = "^0" }
 human_format = { version = "^1" }
 non-empty-string = { version = "^0", features = ["serde"] }
+measurements = "^0"

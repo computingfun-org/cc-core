@@ -1,3 +1,4 @@
+use chrono::NaiveDate;
 use non_empty_string::NonEmptyString;
 
 #[derive(Debug, Default, Clone, serde::Serialize, serde::Deserialize)]
@@ -16,34 +17,35 @@ pub struct State {
     pub marked_ready: bool,
 }
 
+impl State {
+    pub fn is_done(&self) -> bool {
+        self.deposit && self.confirmation && self.marked_ready
+    }
+}
+
 #[derive(
     Debug,
-    Default,
     derive_more::Constructor,
     derive_more::From,
     derive_more::Into,
     Clone,
     Copy,
-    derive_more::FromStr,
-    derive_more::Add,
-    derive_more::Sub,
-    derive_more::Display,
-    derive_more::Not,
-    derive_more::Sum,
-    derive_more::AddAssign,
-    derive_more::SubAssign,
     PartialEq,
     Eq,
-    PartialOrd,
-    Ord,
-    serde::Serialize,
-    serde::Deserialize,
 )]
 #[repr(transparent)]
-pub struct LeadTime(isize);
+pub struct LeadTime(chrono::Days);
 
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone)]
 pub struct LeadItem {
     pub name: NonEmptyString,
     pub lead: LeadTime,
+}
+
+#[derive(Debug, Clone)]
+pub struct TimeLine {
+    pub install: NaiveDate,
+    pub production: LeadTime,
+    pub pre_production: LeadTime,
+    pub paperwork: LeadTime,
 }

@@ -1,9 +1,9 @@
-use crate::Millimeters;
+/*
 
-use super::drawer_box::{Depth, DrawerBox, Height, Width};
+use super::{Depth, Height, Width};
 
 impl Depth {
-    pub fn valen_box(self) -> Millimeters {
+    pub fn valen_box(self) -> Length {
         match self {
             Depth::D12 => todo!(),
             Depth::D14 => Millimeters::from(327.0),
@@ -24,7 +24,7 @@ impl Depth {
 
 #[cfg(test)]
 mod width_tests {
-    use crate::{drawers::drawer_box::Width, Inches};
+    use crate::{Inches, Width};
 
     fn width_from_inches(inches: f64) -> Width {
         Width::custom(Inches::from(inches))
@@ -241,3 +241,5 @@ impl ValenBox {
         }
     }
 }
+
+*/
