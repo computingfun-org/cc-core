@@ -49,3 +49,9 @@ pub struct TimeLine {
     pub pre_production: LeadTime,
     pub paperwork: LeadTime,
 }
+
+pub struct Schedule {
+    pub notes: Notes,
+    pub state: State,
+    pub timeline: TimeLine,
+}
