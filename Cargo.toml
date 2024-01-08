@@ -4,11 +4,11 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-derive_more = { version = "^0" }
-strum = { version = "^0", features = ["derive"] }
-strum_macros = { version = "^0" }
-serde = { version = "^1", features = ["derive"] }
-chrono = { version = "^0" }
-human_format = { version = "^1" }
-non-empty-string = { version = "^0", features = ["serde"] }
-measurements = "^0"
+chrono = "*"
+webbrowser = "*"
+non-empty-string = "*"
+human_format = "*"
+strum_macros = "*"
+derive_more = "*"
+strum = { version = "*", features = ["derive"] }
+serde = { version = "*", features = ["derive"] }
