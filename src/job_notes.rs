@@ -75,7 +75,7 @@ impl Tags {
         self.0.push(tag);
     }
 
-    pub fn remove<T>(&mut self, tag: &Tag) {
+    pub fn remove(&mut self, tag: &Tag) {
         self.0.retain(|i| i != tag);
     }
 

@@ -1,7 +1,39 @@
 pub mod job_notes;
 mod native_date_serde;
-pub mod paperwork_follow_up;
+pub mod scheduling;
 mod test;
+
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub struct DashJob {
+    pub id: DashID,
+    #[serde(flatten)]
+    pub notes: job_notes::JobNotes,
+}
+
+impl DashJob {
+    pub fn open(&self) -> Result<(), std::io::Error> {
+        self.id.open()
+    }
+
+    pub fn url(&self) -> Box<str> {
+        self.id.url()
+    }
+}
+
+impl std::fmt::Display for DashJob {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_fmt(format_args!("{}: {}", self.id, self.notes))
+    }
+}
+
+impl From<DashID> for DashJob {
+    fn from(id: DashID) -> Self {
+        Self {
+            id,
+            notes: job_notes::JobNotes::new(),
+        }
+    }
+}
 
 #[derive(
     Debug,
@@ -19,9 +51,9 @@ mod test;
     serde::Deserialize,
 )]
 #[repr(transparent)]
-pub struct DashJob(std::num::NonZeroUsize);
+pub struct DashID(std::num::NonZeroUsize);
 
-impl DashJob {
+impl DashID {
     pub fn new(number: usize) -> Option<Self> {
         std::num::NonZeroUsize::new(number).map(Self::from)
     }
